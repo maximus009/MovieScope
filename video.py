@@ -41,4 +41,5 @@ def get_videos(genre):
         save_frames_video(videoPath, videoID, outPath='./data/'+genre)
 
 
-get_videos(sys.argv[1])
+if __name__=="__main__":
+    get_videos(sys.argv[1])
