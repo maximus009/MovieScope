@@ -4,7 +4,7 @@ from keras import backend
 import numpy as np
 
 vgg_model_16 = VGG16(include_top=True, weights="imagenet")
-vgg_model_19 = VGG19(include_top=False, weights="imagenet")
+vgg_model_19 = VGG19(include_top=True, weights="imagenet")
 
 def get_features(image, model_name="vgg16"):
 
