@@ -1,2 +1,2 @@
-frameWidth = 448
-frameHeight = 336
+frameWidth = 224 
+frameHeight = 224 
