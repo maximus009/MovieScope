@@ -39,5 +39,11 @@ def get_features(image, model_name="vgg16"):
 
 if __name__=="__main__":
     import cv2
-    vector = get_features(cv2.resize(cv2.imread("testImages/test1.jpg"), (224,224)), 'vgg19')
-    print vector.shape
+    inputImage = cv2.resize(cv2.imread("testImages/test1.jpg"), (224, 224))
+    from time import time
+    start = time()
+    vector = get_features(inputImage, 'vgg19')
+    print 'time taken by vgg 19:',time()-start,'seconds. Vector shape:',vector.shape
+    start = time()
+    vector = get_features(inputImage, 'vgg16')
+    print 'time taken by vgg 16:',time()-start,'seconds. Vector shape:',vector.shape
