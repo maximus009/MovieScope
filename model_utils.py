@@ -3,8 +3,6 @@ from keras.applications.vgg16 import VGG16
 from keras import backend
 import numpy as np
 
-vgg_model_16 = VGG16(include_top=True, weights="imagenet")
-vgg_model_19 = VGG19(include_top=True, weights="imagenet")
 
 def get_features(image, model_name="vgg16"):
 
@@ -12,9 +10,12 @@ def get_features(image, model_name="vgg16"):
         print "Please switch to tensorflow backend. Update to reorder will come soon."
         return None
 
-    if model_name in ["vgg16", "VGG16"]:
+    if model_name.lower() in ["vgg16", "vgg_16"]:
+        vgg_model_16 = VGG16(include_top=True, weights="imagenet")
         model = vgg_model_16
-    if model_name in ["vgg19", "VGG19"]:
+
+    if model_name.lower() in ["vgg19", "vgg_19"]:
+        vgg_model_19 = VGG19(include_top=True, weights="imagenet")
         model = vgg_model_19
 
     model.layers.pop()
