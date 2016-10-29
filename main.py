@@ -1,7 +1,7 @@
 from glob import glob
-from cPickle import load, dump
 import numpy as np
 
+from utils import load_pkl, dump_pkl
 from config.global_parameters import frameWidth, frameHeight
 from config.resources import video_resource
 
@@ -22,7 +22,7 @@ def gather_videos(genre, limit_videos = 25):
 
 
 
-if __name__=="__main__":
+def gather():
     print "Gathering features for Horror...",
     horrorFeatures = gather_videos('horror')
     print horrorFeatures.shape
@@ -35,3 +35,17 @@ if __name__=="__main__":
     dump(horrorFeatures, open('data/horror.p','wb'))
     dump(romanceFeatures, open('data/romance.p','wb'))
     print "OK"
+
+def train():
+    romanceFeatures = load_pkl('romance')
+    horrorFeatures = load_pkl('horror')
+    for r in romanceFeatures:
+        print len(r),
+    print
+    for h in horrorFeatures:
+        print len(h)
+
+
+if __name__=="__main__":
+    train()
+
