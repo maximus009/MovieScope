@@ -4,6 +4,7 @@ import sys,os
 from glob import glob
 from config.resources import video_resource
 from config.global_parameters import frameWidth, frameHeight
+from model_utils import get_features
 
 def get_frames(videoPath, start_time=5000, end_time=120000, time_step=2000):
 
@@ -12,18 +13,23 @@ def get_frames(videoPath, start_time=5000, end_time=120000, time_step=2000):
         for k in range(start_time, end_time+1, time_step):
             cap.set(cv2.cv.CV_CAP_PROP_POS_MSEC, k)
             success, frame = cap.read()
-            frame = cv2.resize(frame,(frameWidth, frameHeight))
-            yield frame
+            if success:
+                frame = cv2.resize(frame,(frameWidth, frameHeight))
+                yield frame
     except Exception as e:
         print e
         return
 
 
-def extract_feature_video(videoPath):
+def extract_feature_video(videoPath, verbose=False):
 
-    """Returns features of shape (N, 4096), NL: number of processed frames"""
+    """Returns features of shape (N, 4096), N: number of processed frames"""
+    if verbose:
+        print "Starting to extract features for ",videoPath
     for frame in get_frames(videoPath):
         feature = get_features(frame)
+        if verbose:
+            print ".",
         yield feature
 
 
