@@ -25,12 +25,13 @@ def extract_feature_video(videoPath, verbose=False):
 
     """Returns features of shape (N, 4096), N: number of processed frames"""
     if verbose:
-        print "Starting to extract features for ",videoPath
+        print "\nStarting to extract features for ",videoPath
     for frame in get_frames(videoPath):
         feature = get_features(frame)
         if verbose:
             print ".",
         yield feature
+    print
 
 
 def save_frames_video(videoPath, videoID, outPath='./data'):
