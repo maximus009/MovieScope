@@ -19,6 +19,14 @@ def get_frames(videoPath, start_time=5000, end_time=120000, time_step=2000):
         return
 
 
+def extract_feature_video(videoPath):
+
+    """Returns features of shape (N, 4096), NL: number of processed frames"""
+    for frame in get_frames(videoPath):
+        feature = get_features(frame)
+        yield feature
+
+
 def save_frames_video(videoPath, videoID, outPath='./data'):
 
     if not os.path.exists(outPath):
