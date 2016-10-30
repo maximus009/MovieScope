@@ -5,7 +5,7 @@ from utils import load_pkl, dump_pkl
 from config.global_parameters import frameWidth, frameHeight
 from config.resources import video_resource
 
-from video import extract_feature_video 
+from video import extract_feature_video, gather_videos
 from model_utils import spatial_model 
 
 """testing hualos"""
@@ -18,11 +18,6 @@ remote = callbacks.RemoteMonitor(root='http://localhost:9000')
 #save the model
 #test it
 
-
-def gather_videos(genre, limit_videos = 25):
-    videoPaths = glob(video_resource+genre+'/*')
-    videoFeatures = np.array([list(extract_feature_video(videoPath, verbose=True)) for videoPath in videoPaths[:limit_videos]])
-    return videoFeatures
 
 
 def gather():
@@ -75,6 +70,8 @@ def train():
     print trainingLabels.shape
 
     model.fit(trainingData, trainingLabels, batch_size=16, nb_epoch=50, callbacks=[remote])
+
+    model.save("bs_16_ep_50_nf_35.h5")
 
     
 if __name__=="__main__":
