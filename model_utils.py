@@ -1,8 +1,12 @@
 from keras.applications.vgg19 import VGG19
 from keras.applications.vgg16 import VGG16
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout
+from keras.layers import Input
 from keras import backend
 import numpy as np
-
+import tensorflow as tf
+tf.python.control_flow_ops = tf
 
 def remove_last_layers(model):
     """To remove the last FC layers of VGG and get the 4096 dim features"""
@@ -36,6 +40,19 @@ def get_features(image, model_name="vgg16"):
     modelFeature =  model.predict(imageTensor)[0]
     return modelFeature
 
+
+def spatial_model(number_of_classes=2):
+    """Classification layers here."""
+
+    model = Sequential()
+    model.add(Dense(2048, input_dim=4096, activation='relu'))
+    model.add(Dropout(0.25))
+    model.add(Dense(256, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(number_of_classes, activation='softmax'))
+
+    return model
 
 if __name__=="__main__":
     import cv2
