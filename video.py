@@ -34,7 +34,7 @@ def extract_feature_video(videoPath, verbose=False):
     print
 
 
-def gather_videos(genre, limit_videos = 25):
+def gather_videos(genre, limit_videos = -1):
     videoPaths = glob(video_resource+genre+'/*')
     videoFeatures = np.array([list(extract_feature_video(videoPath, verbose=True)) for videoPath in videoPaths[:limit_videos]])
     return videoFeatures

@@ -22,22 +22,22 @@ remote = callbacks.RemoteMonitor(root='http://localhost:9000')
 
 def gather():
     print "Gathering features for Horror...",
-    horrorFeatures = gather_videos('horror')
+    horrorFeatures = gather_videos('horror', limit_videos=100)
     print horrorFeatures.shape
     print "OK"
     print "Gathering features for Romance...",
-    romanceFeatures = gather_videos('romance')
+    romanceFeatures = gather_videos('romance', limit_videos=100)
     print romanceFeatures.shape
     print "OK."
     print "Dumping...",
-    dump(horrorFeatures, open('data/horror.p','wb'))
-    dump(romanceFeatures, open('data/romance.p','wb'))
+    dump_pkl(romanceFeatures,'romance100')
+    dump_pkl(horrorFeatures,'horror100')
     print "OK"
 
 
 def train():
-    romanceFeatures = load_pkl('romance')
-    horrorFeatures = load_pkl('horror')
+    romanceFeatures = load_pkl('romance100')
+    horrorFeatures = load_pkl('horror100')
     romanceFeatures = np.array([np.array(f) for f in romanceFeatures])
     horrorFeatures = np.array([np.array(f) for f in horrorFeatures])
 
@@ -47,19 +47,21 @@ def train():
     trainingData = []
     trainingLabels = []
     num_of_frames = 35
-    for i,videoFeatures in enumerate(romanceFeatures):
-        randomIndices = sorted(np.random.randint(0,len(videoFeatures),num_of_frames))
-        selectedFeatures = np.array(videoFeatures[randomIndices])
-        for feature in selectedFeatures:
-            trainingData.append(feature)
-            trainingLabels.append([1,0])
+    for videoFeatures in romanceFeatures:
+        if len(videoFeatures) > num_of_frames:
+            randomIndices = sorted(np.random.randint(0,len(videoFeatures),num_of_frames))
+            selectedFeatures = np.array(videoFeatures[randomIndices])
+            for feature in selectedFeatures:
+                trainingData.append(feature)
+                trainingLabels.append([1,0])
 
-    for i,videoFeatures in enumerate(horrorFeatures):
-        randomIndices = sorted(np.random.randint(0,len(videoFeatures),num_of_frames))
-        selectedFeatures = np.array(videoFeatures[randomIndices])
-        for feature in selectedFeatures:
-            trainingData.append(feature)
-            trainingLabels.append([0,1])
+    for videoFeatures in horrorFeatures:
+        if len(videoFeatures) > num_of_frames:
+            randomIndices = sorted(np.random.randint(0,len(videoFeatures),num_of_frames))
+            selectedFeatures = np.array(videoFeatures[randomIndices])
+            for feature in selectedFeatures:
+                trainingData.append(feature)
+                trainingLabels.append([0,1])
 
 
     trainingData = np.array(trainingData)
@@ -71,9 +73,10 @@ def train():
 
     model.fit(trainingData, trainingLabels, batch_size=16, nb_epoch=50, callbacks=[remote])
 
-    model.save("bs_16_ep_50_nf_35.h5")
+    model.save("all_bs_16_ep_50_nf_35.h5")
 
     
 if __name__=="__main__":
+    #gather()
     train()
 

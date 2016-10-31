@@ -31,5 +31,5 @@ def trials(genre):
     
 
 if __name__=="__main__":
-    model = load_moviescope_model('bs_16_ep_50_nf_35')
+    model = load_moviescope_model('all_bs_16_ep_50_nf_35')
     print trial_video(np.array(list(extract_feature_video(argv[1]))))
