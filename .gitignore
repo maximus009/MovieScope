@@ -1,0 +1,3 @@
+git_ignore_dir/
+config/*.pyc
+

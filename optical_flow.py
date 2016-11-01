@@ -1,11 +1,9 @@
-import glob
-import os
-import pandas as pd
+from glob import glob
 import cv2
+from config.resources import video_resource
 from sys import argv
 import numpy as np
-import scenedetect
-genre=["horror","romance"]
+
 
 def draw_flow(img, flow, step=16):
     h, w = img.shape[:2]
@@ -20,79 +18,49 @@ def draw_flow(img, flow, step=16):
     return vis
 
 
-def draw_hsv(flow):
-    h, w = flow.shape[:2]
-    fx, fy = flow[:,:,0], flow[:,:,1]
-    ang = np.arctan2(fy, fx) + np.pi
-    v = np.sqrt(fx*fx+fy*fy)
-    hsv = np.zeros((h, w, 3), np.uint8)
-    hsv[...,0] = ang*(180/np.pi/2)
-    hsv[...,1] = 255
-    hsv[...,2] = np.minimum(v*4, 255)
-    bgr = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
-    return bgr
+def optical_flow(video, verbose = False, visualize=False):
 
 
-def warp_flow(img, flow):
-    h, w = flow.shape[:2]
-    flow = -flow
-    flow[:,:,0] += np.arange(w)
-    flow[:,:,1] += np.arange(h)[:,np.newaxis]
-    res = cv2.remap(img, flow, None, cv2.INTER_LINEAR)
-    return res
+    if verbose:
+        print "Stacking Optical Flow features for",video
 
-
-def optical_flow(video):
+    stacked_optical_flow = []
     cap = cv2.VideoCapture(video)
-    print video
     ret, prev = cap.read()
     prev = cv2.resize(prev, (224,224)) 
     prevgray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
-    show_hsv = False
-    show_glitch = False
-    cur_glitch = prev.copy()
 
     while(True):
+        if verbose:
+            print ".",
         ret,img = cap.read()
+        if ret is not True:
+            if verbose:
+                print "Frames processed."
+            break
         img = cv2.resize(img, (224, 224))
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  
         flow = cv2.calcOpticalFlowFarneback(prevgray, gray, 0.5, 3, 15, 3, 5, 1.2, 0)
+        stacked_optical_flow.append(flow)
         prevgray = gray
-        print
-        print
-        cv2.imshow('flow', draw_flow(gray, flow))
-        if show_hsv:
-            cv2.imshow('flow HSV', draw_hsv(flow))
-        if show_glitch:
-            cur_glitch = warp_flow(cur_glitch, flow)
-            cv2.imshow('glitch', cur_glitch)
-        if cv2.waitKey(10) & 0xFF == ord('q'):
-            break
-        ch = 0xFF & cv2.waitKey(5)
-        if ch == 27:
-            break
-        if ch == ord('1'):
-            show_hsv = not show_hsv
-            print('HSV flow visualization is', ['off', 'on'][show_hsv])
-        if ch == ord('2'):
-            show_glitch = not show_glitch
-            if show_glitch:
-                cur_glitch = img.copy()
-            print('glitch is', ['off', 'on'][show_glitch])
+        if visualize:
+            cv2.imshow('flow', draw_flow(gray, flow))
+            if cv2.waitKey(10) == ord('q'):
+                break
+    print
     cv2.destroyAllWindows()
+    stacked_optical_flow = np.array(stacked_optical_flow)
+    return stacked_optical_flow
 
-def main():
-    
-    prevdir = os.getcwd()
-    for g in genre[:1]:
-        os.chdir('./genres/'+g)
-        for file_format in ["*.mp4"]:#, "*.webm"):
-            title=glob.glob(file_format)
-            for video in title[:1]:
-                optical_flow(video)  
+
+def main(genre):
+    videoPaths = glob(video_resource+genre+'/*')
+    for videoPath in videoPaths:
+        video_OF_feature = optical_flow(videoPath, verbose=True, visualize=True)
+        print video_OF_feature.shape
+        break
 
 
 if __name__ == '__main__':
-    optical_flow(argv[1])
-   #main()
+    main('romance')
     

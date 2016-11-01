@@ -1,6 +1,6 @@
 import cv2, sys, os
 from config.global_parameters import frameWidth, frameHeight
-from image_utils import sliding_window
+from utils import sliding_window
 
 def augment(frame, flip=True, patches=True):
 
