@@ -20,19 +20,17 @@ remote = callbacks.RemoteMonitor(root='http://localhost:9000')
 
 
 
-def gather():
-    print "Gathering features for Horror...",
-    horrorFeatures = gather_videos('horror', limit_videos=100)
-    print horrorFeatures.shape
-    print "OK"
-    print "Gathering features for Romance...",
-    romanceFeatures = gather_videos('romance', limit_videos=100)
-    print romanceFeatures.shape
+def gather_genre(genre, limit_videos=100):
+
+    print "Gathering features for",genre,
+    genreFeatures = gather_videos(genre, limit_videos)
     print "OK."
-    print "Dumping...",
-    dump_pkl(romanceFeatures,'romance100')
-    dump_pkl(horrorFeatures,'horror100')
-    print "OK"
+    print genreFeatures.shape
+    dump_pkl(genreFeatures, genre+str(limit_videos))
+
+
+def gather():
+    gather_genre('action')
 
 
 def train():
@@ -77,6 +75,6 @@ def train():
 
     
 if __name__=="__main__":
-    #gather()
-    train()
+    gather()
+    #train()
 
