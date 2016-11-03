@@ -1,4 +1,5 @@
 from keras.models import load_model
+from multiprocessing import Pool
 from sys import argv
 from glob import glob
 import numpy as np
@@ -21,6 +22,16 @@ def trial_video(videoFeatures):
     predCount = np.bincount(predictions)
     return prediction_scores, predCount
             
+def test_video(videoPath):
+    videoFeatures = np.array(list(extract_feature_video(videoPath, verbose=True)))
+    print trial_video(videoFeatures)
+
+
+def test_videos(testPath):
+    videoPaths = glob(testPath+'/*')
+    for videoPath in videoPaths:
+        test_video(videoPath)
+
 
 def trials(genre):
     genreFeatures = gather_videos(genre,limit_videos=40)
@@ -32,4 +43,5 @@ def trials(genre):
 
 if __name__=="__main__":
     model = load_moviescope_model('all_bs_16_ep_50_nf_35')
-    print trial_video(np.array(list(extract_feature_video(argv[1]))))
+    p = Pool(8)
+    test_videos(argv[1])
