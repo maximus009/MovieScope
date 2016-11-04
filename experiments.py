@@ -1,5 +1,4 @@
 from keras.models import load_model
-from multiprocessing import Pool
 from sys import argv
 from glob import glob
 import numpy as np
@@ -17,6 +16,7 @@ def load_moviescope_model(modelName, verbose=True):
 def trial_video(videoFeatures):
 
     predictions = model.predict_classes(videoFeatures, verbose=0)
+    print "predictions:",predictions,
     prediction_scores = model.predict(videoFeatures,verbose=0)
     prediction_scores = np.mean(prediction_scores, axis=0)
     predCount = np.bincount(predictions)
@@ -39,9 +39,8 @@ def trials(genre):
         count = trial_video(videoFeatures)
         print count
 
-    
 
 if __name__=="__main__":
-    model = load_moviescope_model('all_bs_16_ep_50_nf_35')
-    p = Pool(8)
-    test_videos(argv[1])
+    model = load_moviescope_model('3g_bs32_ep10_nf_35')
+#    model = load_moviescope_model('all_bs_16_ep_50_nf_35')
+    test_video(argv[1])
