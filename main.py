@@ -7,6 +7,8 @@ from config.resources import video_resource
 from video import extract_feature_video, gather_videos
 from model_utils import spatial_model 
 
+from keras.utils.np_utils import to_categorical
+
 """testing hualos"""
 from keras import callbacks
 remote = callbacks.RemoteMonitor(root='http://localhost:9000')
@@ -39,7 +41,9 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
     trainingData = []
     trainingLabels = []
     num_of_random_frames = 35
-    for genre in genres:
+    num_of_classes = len(genres)
+    print "Number of classes:",num_of_classes
+    for genreIndex, genre in enumerate(genres):
         print "Looking for pickle file: data/{0}{1}.p".format(genre, str(num_of_videos)),
         try:
             genreFeatures = load_pkl(genre+str(num_of_videos))
@@ -54,64 +58,27 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
                 selectedFeatures = np.array(videoFeatures[randomIndices])
                 for feature in selectedFeatures:
                     trainingData.append(feature)
-                    trainingLabels.append(genreLabels[genre])
+                    trainingLabels.append([genreIndex])
     trainingData = np.array(trainingData)
     trainingLabels = np.array(trainingLabels)
     print trainingData.shape 
     print trainingLabels.shape
-    trainingLabels = trainingLabels.reshape((-1,1))
+#    trainingLabels = to_categorical(trainingLabels, num_of_classes)
+    print trainingLabels
+#    trainingLabels = trainingLabels.reshape((-1,num_of_classes))
 
     """Initialize the mode"""
-    model = spatial_model(3)
+    model = spatial_model(num_of_classes)
     model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
    
     """Start training"""
-    model.fit(trainingData, trainingLabels, batch_size=32, nb_epoch=20, callbacks=[remote])
-    model.save("3g_bs_16_ep_20_nf_35.h5")
+    batch_size = 32
+    nb_epoch = 10
 
-
-def _train():
-    """deprecated"""
-    romanceFeatures = load_pkl('romance100')
-    horrorFeatures = load_pkl('horror100')
-    romanceFeatures = np.array([np.array(f) for f in romanceFeatures])
-    horrorFeatures = np.array([np.array(f) for f in horrorFeatures])
-
-    model = spatial_model(2)
-    model.compile(optimizer='sgd', loss='binary_crossentropy', metrics=['accuracy'])
-
-    trainingData = []
-    trainingLabels = []
-    num_of_frames = 35
-    for videoFeatures in romanceFeatures:
-        if len(videoFeatures) > num_of_frames:
-            randomIndices = sorted(np.random.randint(0,len(videoFeatures),num_of_frames))
-            selectedFeatures = np.array(videoFeatures[randomIndices])
-            for feature in selectedFeatures:
-                trainingData.append(feature)
-                trainingLabels.append([1,0])
-
-    for videoFeatures in horrorFeatures:
-        if len(videoFeatures) > num_of_frames:
-            randomIndices = sorted(np.random.randint(0,len(videoFeatures),num_of_frames))
-            selectedFeatures = np.array(videoFeatures[randomIndices])
-            for feature in selectedFeatures:
-                trainingData.append(feature)
-                trainingLabels.append([0,1])
-
-
-    trainingData = np.array(trainingData)
-    trainingLabels = np.array(trainingLabels)
-    trainingLabels = trainingLabels.reshape((-1,2))
-    print trainingData.shape
-    print trainingData[0].shape
-    print trainingLabels.shape
-
-    model.fit(trainingData, trainingLabels, batch_size=16, nb_epoch=50, callbacks=[remote])
-
-    model.save("all_bs_16_ep_50_nf_35.h5")
+    model.fit(trainingData, trainingLabels, batch_size=batch_size, nb_epoch=nb_epoch)#, callbacks=[remote])
+    model.save(str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+"_nf_35.h5")
 
     
 if __name__=="__main__":
-    train_classifier(num_of_videos=100)
+    train_classifier(genres=['romance', 'horror', 'action'],num_of_videos=100)
