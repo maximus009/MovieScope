@@ -37,7 +37,8 @@ def get_features(image, model_name="vgg16"):
     imageTensor = np.zeros((1, 224, 224, 3))
     imageTensor[0] = image
 
-    modelFeature =  model.predict(imageTensor)[0]/255.0
+    ### /255 causing error. Maybe Vanishing gradients
+    modelFeature =  model.predict(imageTensor)[0]
     return modelFeature
 
 
