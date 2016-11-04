@@ -41,6 +41,6 @@ def trials(genre):
 
 
 if __name__=="__main__":
-    model = load_moviescope_model('3g_bs32_ep10_nf_35')
+    model = load_moviescope_model('3g_bs64_ep5_nf_35')
 #    model = load_moviescope_model('all_bs_16_ep_50_nf_35')
     test_video(argv[1])

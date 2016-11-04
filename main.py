@@ -73,12 +73,16 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
 
    
     """Start training"""
-    batch_size = 32
-    nb_epoch = 10
+    batch_size = 64
+    nb_epoch = 5 
 
     model.fit(trainingData, trainingLabels, batch_size=batch_size, nb_epoch=nb_epoch)#, callbacks=[remote])
-    model.save(str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+"_nf_35.h5")
-
+    modelOutPath = str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+"_nf_35.h5"
+    model.save(modelOutPath)
+    print "Model saved at",modelOutPath
     
 if __name__=="__main__":
-    train_classifier(genres=['romance', 'horror', 'action'],num_of_videos=100)
+#    gather_genre('action',limit_videos=5)
+#    gather_genre('horror',limit_videos=5)
+#    gather_genre('romance',limit_videos=5)
+    train_classifier(genres=['action', 'horror', 'romance'],num_of_videos=5)
