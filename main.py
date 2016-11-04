@@ -2,9 +2,8 @@ from glob import glob
 import numpy as np
 
 from utils import load_pkl, dump_pkl
-from config.global_parameters import frameWidth, frameHeight
+from config.global_parameters import frameWidth, frameHeight, genreLabels 
 from config.resources import video_resource
-
 from video import extract_feature_video, gather_videos
 from model_utils import spatial_model 
 
@@ -19,7 +18,6 @@ remote = callbacks.RemoteMonitor(root='http://localhost:9000')
 #test it
 
 
-
 def gather_genre(genre, limit_videos=100):
 
     print "Gathering features for",genre,
@@ -30,10 +28,51 @@ def gather_genre(genre, limit_videos=100):
 
 
 def gather():
-    gather_genre('action')
+    gather_genre('action', limit_videos=3)
+    gather_genre('horror',3)
+    gather_genre('romance',3)
 
 
-def train():
+def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
+    
+    """Gather data for selected genres"""
+    trainingData = []
+    trainingLabels = []
+    num_of_random_frames = 35
+    for genre in genres:
+        print "Looking for pickle file: data/{0}{1}.p".format(genre, str(num_of_videos)),
+        try:
+            genreFeatures = load_pkl(genre+str(num_of_videos))
+            genreFeatures = np.array([np.array(f) for f in genreFeatures]) # numpy hack
+        except Exception as e:
+            print e
+            return
+        print "OK."
+        for videoFeatures in genreFeatures:
+            if len(videoFeatures) > num_of_random_frames:
+                randomIndices = np.random.randint(0, len(videoFeatures), num_of_random_frames)
+                selectedFeatures = np.array(videoFeatures[randomIndices])
+                for feature in selectedFeatures:
+                    trainingData.append(feature)
+                    trainingLabels.append(genreLabels[genre])
+    trainingData = np.array(trainingData)
+    trainingLabels = np.array(trainingLabels)
+    print trainingData.shape 
+    print trainingLabels.shape
+    trainingLabels = trainingLabels.reshape((-1,1))
+
+    """Initialize the mode"""
+    model = spatial_model(3)
+    model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+   
+    """Start training"""
+    model.fit(trainingData, trainingLabels, batch_size=32, nb_epoch=20, callbacks=[remote])
+    model.save("3g_bs_16_ep_20_nf_35.h5")
+
+
+def _train():
+    """deprecated"""
     romanceFeatures = load_pkl('romance100')
     horrorFeatures = load_pkl('horror100')
     romanceFeatures = np.array([np.array(f) for f in romanceFeatures])
@@ -75,6 +114,4 @@ def train():
 
     
 if __name__=="__main__":
-    gather()
-    #train()
-
+    train_classifier(num_of_videos=100)
