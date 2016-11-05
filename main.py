@@ -82,7 +82,5 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
     print "Model saved at",modelOutPath
     
 if __name__=="__main__":
-#    gather_genre('action',limit_videos=5)
-#    gather_genre('horror',limit_videos=5)
-#    gather_genre('romance',limit_videos=5)
-    train_classifier(genres=['action', 'horror', 'romance'],num_of_videos=5)
+    from sys import argv
+    train_classifier(genres=['action', 'horror', 'romance'],num_of_videos=50)
