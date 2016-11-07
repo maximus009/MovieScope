@@ -5,13 +5,6 @@ import numpy as np
 
 from video import extract_feature_video, gather_videos
 
-def load_moviescope_model(modelName, verbose=True):
-
-    if verbose:
-        print "Loading model:",modelName
-    model = load_model(modelName+'.h5')
-    return model
-
 
 def trial_video(videoFeatures):
 
