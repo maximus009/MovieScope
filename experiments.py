@@ -3,6 +3,8 @@ from sys import argv
 from glob import glob
 import numpy as np
 
+from utils import load_moviescope_model
+
 from video import extract_feature_video, gather_videos
 
 
@@ -36,4 +38,4 @@ def trials(genre):
 if __name__=="__main__":
     model = load_moviescope_model('3g_bs64_ep5_nf_35')
 #    model = load_moviescope_model('all_bs_16_ep_50_nf_35')
-    test_video(argv[1])
+    #test_video(argv[1])
