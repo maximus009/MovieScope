@@ -1,7 +1,7 @@
 from keras.applications.vgg19 import VGG19
 from keras.applications.vgg16 import VGG16
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout
+from keras.layers.core import Dense, Dropout, LSTM
 from keras.layers import Input
 from keras import backend
 import numpy as np
@@ -42,18 +42,21 @@ def get_features(image, model_name="vgg16"):
     return modelFeature
 
 
-def spatial_model(number_of_classes=2):
-    """Classification layers here."""
+def lstm_model(number_of_classes=2, number_of_frames=None, input_dim=4096):
+    """Classification layers here with LSTM."""
 
+    if number_of_frames == None:
+        print  "Need to specify the number of frames (as timestep)."
+        return
     model = Sequential()
-    model.add(Dense(2048, input_dim=4096, activation='relu'))
-    model.add(Dropout(0.25))
-    model.add(Dense(256, activation='relu'))
+    model.add(LSTM(64, return_sequence=True, stateful=True, input_shape=(num_of_frames, input_dim)))
+    model.add(LSTM(64, return_sequence=True, stateful=True))
+    model.add(Dense(32, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(64, activation='relu'))
     model.add(Dense(number_of_classes, activation='softmax'))
 
     return model
+
 
 if __name__=="__main__":
     import cv2
