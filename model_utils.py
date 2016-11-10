@@ -55,19 +55,6 @@ def spatial_model(number_of_classes=2):
     return model
 
 
-def spatial_model(number_of_classes=2):
-    """Classification layers here."""
-
-    model = Sequential()
-    model.add(Dense(2048, input_dim=4096, activation='relu'))
-    model.add(Dropout(0.25))
-    model.add(Dense(256, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(64, activation='relu'))
-    model.add(Dense(number_of_classes, activation='softmax'))
-
-    return model
-
 if __name__=="__main__":
     import cv2
     inputImage = cv2.resize(cv2.imread("testImages/test1.jpg"), (224, 224))
