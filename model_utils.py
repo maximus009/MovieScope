@@ -50,8 +50,9 @@ def lstm_model(number_of_classes=2, number_of_frames=None, input_dim=4096):
         print  "Need to specify the number of frames (as timestep)."
         return
     model = Sequential()
-    model.add(LSTM(64, return_sequence=True, stateful=True, input_shape=(num_of_frames, input_dim)))
-    model.add(LSTM(64, return_sequence=True, stateful=True))
+    model.add(LSTM(64, return_sequences=True, stateful=False, input_shape=(number_of_frames, input_dim)))
+    model.add(LSTM(64, return_sequences=True, stateful=False))
+    model.add(LSTM(64))
     model.add(Dense(32, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(number_of_classes, activation='softmax'))
