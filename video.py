@@ -23,6 +23,7 @@ def get_frames(videoPath, start_time=5000, end_time=120000, time_step=2000):
 
 def extract_feature_video(videoPath, verbose=False):
 
+    """deprecated"""
     """Returns features of shape (N, 4096), N: number of processed frames"""
     if verbose:
         print "\nStarting to extract features for ",videoPath
@@ -35,6 +36,7 @@ def extract_feature_video(videoPath, verbose=False):
 
 
 def gather_videos(genre, limit_videos = -1):
+    """deprecated"""
     videoPaths = glob(video_resource+genre+'/*')
     videoFeatures = np.array([list(extract_feature_video(videoPath, verbose=True)) for videoPath in videoPaths[:limit_videos]])
     return videoFeatures

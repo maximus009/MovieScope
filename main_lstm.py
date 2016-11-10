@@ -4,8 +4,8 @@ import numpy as np
 from utils import load_pkl, dump_pkl
 from config.global_parameters import frameWidth, frameHeight, genreLabels 
 from config.resources import video_resource
-from video import extract_feature_video, gather_videos, get_frames
-from model_utils import lstm_model 
+from video import get_frames
+from model_utils import lstm_model, get_features
 
 from keras.utils.np_utils import to_categorical
 
@@ -22,8 +22,18 @@ remote = callbacks.RemoteMonitor(root='http://localhost:9000')
 
 def gather_genre(genre, limit_videos=100):
 
-    print "Gathering features for",genre,
-    genreFeatures = gather_videos(genre, limit_videos)
+    print "Gathering features for",genre
+    videoPaths = glob(video_resource+genre+'/*')[:limit_videos]
+    genreFeatures = []
+    for videoPath in videoPaths:
+        videoFeatures = []
+        print "extracting features for",videoPath
+        for frame in get_frames(videoPath, time_step=1000):
+            frameFeatures = get_features(frame)
+            videoFeatures.append(frameFeatures)
+        videoFeatures = np.array(videoFeatures)
+        genreFeatures.append(videoFeatures)
+    genreFeatures = np.array(genreFeatures)
     print "OK."
     print genreFeatures.shape
     dump_pkl(genreFeatures, genre+str(limit_videos))
@@ -77,4 +87,5 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
 
 if __name__=="__main__":
     from sys import argv
-    train_classifier(genres=['action','horror', 'romance'],num_of_videos=100)
+    gather_genre('action',15)
+    #train_classifier(genres=['action','horror', 'romance'],num_of_videos=100)
