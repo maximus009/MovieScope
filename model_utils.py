@@ -55,6 +55,23 @@ def spatial_model(number_of_classes=2):
     return model
 
 
+def lstm_model(number_of_classes=2, number_of_frames=None, input_dim=4096):
+    """Classification layers here with LSTM."""
+
+    if number_of_frames == None:
+        print  "Need to specify the number of frames (as timestep)."
+        return
+    model = Sequential()
+    model.add(LSTM(64, return_sequences=True, stateful=False, input_shape=(number_of_frames, input_dim)))
+    model.add(LSTM(64, return_sequences=True, stateful=False))
+    model.add(LSTM(64))
+    model.add(Dense(32, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(number_of_classes, activation='softmax'))
+
+    return model
+
+
 if __name__=="__main__":
     import cv2
     inputImage = cv2.resize(cv2.imread("testImages/test1.jpg"), (224, 224))
