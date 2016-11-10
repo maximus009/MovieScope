@@ -1,7 +1,8 @@
 from keras.applications.vgg19 import VGG19
 from keras.applications.vgg16 import VGG16
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, LSTM
+from keras.layers.core import Dense, Dropout
+from keras.layers import LSTM
 from keras.layers import Input
 from keras import backend
 import numpy as np
