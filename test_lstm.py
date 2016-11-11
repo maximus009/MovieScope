@@ -30,7 +30,7 @@ def predict_genre(videoPath):
 
 if __name__=="__main__":
     from time import time
-    model = load_moviescope_model("lstm_2g_bs10_ep100")
+    model = load_moviescope_model("lstm_3g_bs10_ep100")
     videoPath = argv[1]
     s = time()
     predict_genre(videoPath)
