@@ -143,5 +143,4 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
     model.save("data/models/lstm_"+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+".h5")
 
 if __name__=="__main__":
-    from sys import argv
-    train_classifier(genres=['action','horror', 'romance'],num_of_videos=5)
+    train_classifier(genres=['horror', 'romance'],num_of_videos=100)
