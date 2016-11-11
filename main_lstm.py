@@ -5,7 +5,7 @@ from utils import load_pkl, dump_pkl
 from config.global_parameters import frameWidth, frameHeight, genreLabels 
 from config.resources import video_resource
 from video import extract_feature_video, gather_videos, get_frames
-from model_utils import lstm_model 
+from model_utils import lstm_model, get_features
 
 from keras.utils.np_utils import to_categorical
 
@@ -19,11 +19,20 @@ remote = callbacks.RemoteMonitor(root='http://localhost:9000')
 #save the model
 #test it
 
-
 def gather_genre(genre, limit_videos=100):
 
-    print "Gathering features for",genre,
-    genreFeatures = gather_videos(genre, limit_videos)
+    print "Gathering features for",genre
+    videoPaths = glob(video_resource+genre+'/*')[:limit_videos]
+    genreFeatures = []
+    for videoPath in videoPaths:
+        videoFeatures = []
+        print "extracting features for",videoPath
+        for frame in get_frames(videoPath, time_step=1000):
+            frameFeatures = get_features(frame)
+            videoFeatures.append(frameFeatures)
+        videoFeatures = np.array(videoFeatures)
+        genreFeatures.append(videoFeatures)
+    genreFeatures = np.array(genreFeatures)
     print "OK."
     print genreFeatures.shape
     dump_pkl(genreFeatures, genre+str(limit_videos))
@@ -85,13 +94,20 @@ def _train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100)
 #    print "Model saved at",modelOutPath
     
     """
+
+def sequencify(videoFeatures, length=20):
+    totalFrames = len(videoFeatures)
+    for i in range(0, totalFrames, length):
+        yield videoFeatures[i:i+length]
+      
+    
 def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
     
     """Gather data for selected genres"""
     trainingData = []
     trainingLabels = []
     num_of_classes = len(genres)
-    num_of_frames = 30
+    num_of_frames = 20
     print "Number of classes:",num_of_classes
     for genreIndex, genre in enumerate(genres):
         print "Looking for pickle file: data/{0}{1}.p".format(genre, str(num_of_videos)),
@@ -102,13 +118,14 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
             print e
             return
         for videoFeatures in genreFeatures:
-            trainingData.append(videoFeatures[:num_of_frames])
-            trainingLabels.append(genreIndex)
+            for sequence in sequencify(videoFeatures, num_of_frames):
+                trainingData.append(sequence)
+                trainingLabels.append(genreIndex)
     num_of_samples = len(trainingLabels)
 
     trainingDataTensor = np.zeros((num_of_samples, num_of_frames, 4096))
     print num_of_samples
-    for sampleIndex in range(num_of_samples-1):
+    for sampleIndex in range(num_of_samples):
         for vectorIndex in range(num_of_frames):
             try:
                 trainingDataTensor[sampleIndex][vectorIndex] = trainingData[sampleIndex][vectorIndex]
@@ -123,8 +140,8 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
     nb_epoch = 100
     batch_size = 10
     model.fit(trainingDataTensor, trainingLabels, nb_epoch=nb_epoch, batch_size=batch_size)
-    model.save(str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+".h5")
+    model.save("data/models/lstm_"+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+".h5")
 
 if __name__=="__main__":
     from sys import argv
-    train_classifier(genres=['action','horror', 'romance'],num_of_videos=100)
+    train_classifier(genres=['action','horror', 'romance'],num_of_videos=5)
