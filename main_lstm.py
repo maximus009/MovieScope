@@ -79,13 +79,11 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
     model = lstm_model(num_of_classes, num_of_frames, 4096)
     model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-
-    nb_epoch = 100
+    nb_epoch = 50
     batch_size = 10
     model.fit(trainingDataTensor, trainingLabels, nb_epoch=nb_epoch, batch_size=batch_size)
-    model.save(str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+".h5")
+    model.save("lstm_"+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+".h5")
 
 if __name__=="__main__":
     from sys import argv
-    gather_genre('action',15)
-    #train_classifier(genres=['action','horror', 'romance'],num_of_videos=100)
+    train_classifier(genres=['action','horror', 'romance'],num_of_videos=15)
