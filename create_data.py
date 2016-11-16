@@ -33,7 +33,7 @@ def gather_training_data(genre, model_name=default_model_name):
         genreFeatures.append(videoFeatures)
 
     outPath = genre+"_ultimate_"+model_name
-    dump_pkl(outPath)
+    dump_pkl(genreFeatures, outPath)
 
         
 if __name__=="__main__":
