@@ -36,6 +36,9 @@ def trials(genre):
 
 
 if __name__=="__main__":
-    model = load_moviescope_model('3g_bs64_ep5_nf_35')
+    model = load_moviescope_model('spatial_3g_bs32_ep50_nf_75')
 #    model = load_moviescope_model('all_bs_16_ep_50_nf_35')
-    #test_video(argv[1])
+    from time import time
+    s = time()
+    test_video(argv[1])
+    print time()-s,"seconds."
