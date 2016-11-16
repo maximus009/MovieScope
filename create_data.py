@@ -37,6 +37,6 @@ def gather_training_data(genre, model_name=default_model_name):
 
         
 if __name__=="__main__":
-    genres=['action','animation','horror','romance']
-    for genre in genres:
-        gather_training_data(genre)
+    from sys import argv
+    genre = argv[1]
+    gather_training_data(genre)
