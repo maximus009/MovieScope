@@ -19,7 +19,7 @@ def gather_training_data(genre, model_name=default_model_name):
 
     trainPath = os.path.join(video_resource,'train',genre)
     print trainPath
-    videoPaths = glob(trainPath+'/*')[:5]
+    videoPaths = glob(trainPath+'/*')
     genreFeatures = []
     for videoPath in videoPaths:
         print videoPath,":",
