@@ -40,7 +40,7 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
     """Gather data for selected genres"""
     trainingData = []
     trainingLabels = []
-    num_of_random_frames = 35
+    num_of_random_frames = 75
     num_of_classes = len(genres)
     print "Number of classes:",num_of_classes
     for genreIndex, genre in enumerate(genres):
@@ -73,14 +73,14 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
 
    
     """Start training"""
-    batch_size = 64
-    nb_epoch = 5 
+    batch_size = 32
+    nb_epoch = 50 
 
     model.fit(trainingData, trainingLabels, batch_size=batch_size, nb_epoch=nb_epoch)#, callbacks=[remote])
-    modelOutPath = str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+"_nf_35.h5"
+    modelOutPath ='data/models/spatial_'+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+"_nf_"+str(num_of_random_frames)+".h5"
     model.save(modelOutPath)
     print "Model saved at",modelOutPath
     
 if __name__=="__main__":
     from sys import argv
-    train_classifier(genres=['action', 'horror', 'romance'],num_of_videos=50)
+    train_classifier(genres=['action', 'horror', 'romance'],num_of_videos=100)
