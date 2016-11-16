@@ -38,4 +38,5 @@ def gather_training_data(genre, model_name=default_model_name):
         
 if __name__=="__main__":
     genres=['action','animation','horror','romance']
-    gather_training_data(genres[0])
+    for genre in genres:
+        gather_training_data(genre)
