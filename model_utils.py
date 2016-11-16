@@ -22,6 +22,23 @@ vgg_model_19 = VGG19(include_top=True, weights="imagenet")
 remove_last_layers(vgg_model_16)
 remove_last_layers(vgg_model_19)
 
+
+def get_features_batch(frames, model_name="vgg16"):
+
+    if model_name.lower() in ["vgg16", "vgg_16"]:
+        model = vgg_model_16
+
+    if model_name.lower() in ["vgg19", "vgg_19"]:
+        model = vgg_model_19
+
+    imageTensor = np.array(frames)
+
+    ### /255 causing error. Maybe Vanishing gradients
+    modelFeature =  model.predict(imageTensor, verbose=1)
+    return modelFeature
+
+
+
 def get_features(image, model_name="vgg16"):
 
     if backend.image_dim_ordering()=='th':
