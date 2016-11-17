@@ -7,6 +7,8 @@ from config.resources import video_resource
 from glob import glob
 import numpy as np
 from utils import dump_pkl, load_pkl, load_moviescope_model
+from collections import defaultdict
+
 
 def gather_testing_data(genre, model_name=default_model_name):
     """Driver function to collect frame features for a genre"""
@@ -46,6 +48,8 @@ def ultimate_evaluate(model):
     genres = ['action']
     testingData = []
     testingLabels = []
+    total = {0:0}
+    correct = {0:0}
     for genreIndex, genre in enumerate(genres):
 #        print "Looking for pickle file: data/{0}{1}.p".format(genre, str(num_of_videos)),
         try:
@@ -57,10 +61,18 @@ def ultimate_evaluate(model):
         print "OK."
         for videoFeatures in genreFeatures:
             """to get all frames from a video -- hacky"""
+            total[genreIndex]+=1
+            d = defaultdict(int)
             predictedClasses = model.predict_classes(videoFeatures) #List of predictions, per-frame
             print predictedClasses
+            for i in predictedClasses:
+                d[i]+=1
+            predictedGenre = max(d.iteritems(), key=lambda x: x[1])
+            if predictedGenre == genreIndex:
+                correct[genreIndex]+=1
             break # ONLY ONE VIDEO
 
+    print correct, total
 
 #
 if __name__=="__main__":
