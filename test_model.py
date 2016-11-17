@@ -67,7 +67,7 @@ def ultimate_evaluate(model):
             print predictedClasses
             for i in predictedClasses:
                 d[i]+=1
-            predictedGenre = max(d.iteritems(), key=lambda x: x[1])
+            predictedGenre = max(d.iteritems(), key=lambda x: x[1])[0]
             if predictedGenre == genreIndex:
                 correct[genreIndex]+=1
             break # ONLY ONE VIDEO
