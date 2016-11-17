@@ -54,4 +54,4 @@ def train_classifier(genres=['romance', 'horror', 'action'], model_name=default_
 
 if __name__=="__main__":
 
-    train_classifier(genres=['action','horror','romance'])
+    train_classifier(genres=['action','drama','horror','romance'])
