@@ -44,8 +44,7 @@ def test_video(videoPath, model):
     
 
 def ultimate_evaluate(model):
-#    genres = ['action','drama','horror','romance']
-    genres = ['action']
+    genres = ['action','drama','horror','romance']
     testingData = []
     testingLabels = []
     total = {0:0}
