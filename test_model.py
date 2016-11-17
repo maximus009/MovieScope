@@ -66,4 +66,5 @@ if __name__=="__main__":
 
     from sys import argv
     model = load_moviescope_model(argv[1])
+    ultimate_evaluate(model)
     """to call test_video"""
