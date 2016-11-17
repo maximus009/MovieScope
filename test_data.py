@@ -29,6 +29,6 @@ def gather_training_data(genre, model_name=default_model_name):
     dump_pkl(genreFeatures, outPath)
 
 if __name__=="__main__":
-    genres = ['action','drama','fantasy','horror','romance']
+    genres = ['action','drama','horror','romance']
     for genre in genres:
         gather_training_data(genre)
