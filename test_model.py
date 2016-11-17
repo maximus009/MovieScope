@@ -8,6 +8,7 @@ from glob import glob
 import numpy as np
 from utils import dump_pkl, load_pkl, load_moviescope_model
 from collections import defaultdict
+from sklearn.metrics import confusion_matrix
 
 
 def gather_testing_data(genre, model_name=default_model_name):
@@ -71,6 +72,11 @@ def ultimate_evaluate(model):
                 correct[genreIndex]+=1
 
     print correct, total
+    yTrue = total.values()
+    yPredict = correct.values()
+
+    confusionMatrix = confusion_matrix(yTrue, yPredict)
+    print confusionMatrix
 
 #
 if __name__=="__main__":
