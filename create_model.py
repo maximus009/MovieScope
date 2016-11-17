@@ -23,15 +23,12 @@ def train_classifier(genres=['romance', 'horror', 'action'], model_name=default_
             return
         print "OK."
         for videoFeatures in genreFeatures:
-            if len(videoFeatures) > num_of_random_frames:
-#                randomIndices = np.random.randint(0, len(videoFeatures), num_of_random_frames)
-#                randomIndices = range(len(videoFeatures))
-                """to get all frames from a video -- hacky"""
-                randomIndices = range(len(videoFeatures))
-                selectedFeatures = np.array(videoFeatures[randomIndices])
-                for feature in selectedFeatures:
-                    trainingData.append(feature)
-                    trainingLabels.append([genreIndex])
+            """to get all frames from a video -- hacky"""
+            randomIndices = range(len(videoFeatures))
+            selectedFeatures = np.array(videoFeatures[randomIndices])
+            for feature in selectedFeatures:
+                trainingData.append(feature)
+                trainingLabels.append([genreIndex])
     trainingData = np.array(trainingData)
     trainingLabels = np.array(trainingLabels)
     print trainingData.shape 
