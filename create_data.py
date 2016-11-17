@@ -8,11 +8,6 @@ from model_utils import get_features_batch
 from utils import dump_pkl
 from video import get_frames
 
-def gather_data():
-
-    for genre in ['romance', 'horror']:
-        genreData, genreLabels = get_features_for_genre(genre)
-        dump((genreData, genreLabels), open('data/'+genre+'.p','wb'))
 
 def gather_training_data(genre, model_name=default_model_name):
     """Driver function to collect frame features for a genre"""
