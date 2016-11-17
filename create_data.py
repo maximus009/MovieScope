@@ -23,7 +23,7 @@ def gather_training_data(genre, model_name=default_model_name):
         if len(frames)==0:
             print "corrupt."
             continue
-        videoFeatures = get_features_batch(frames)
+        videoFeatures = get_features_batch(frames, model_name)
         print videoFeatures.shape
         genreFeatures.append(videoFeatures)
 
