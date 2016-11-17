@@ -5,7 +5,8 @@ from model_utils import get_features_batch
 from config.global_parameters import default_model_name
 from config.resources import video_resource
 from glob import glob
-from utils import dump_pkl, load_moviescope_model
+import numpy as np
+from utils import dump_pkl, load_pkl, load_moviescope_model
 
 def gather_testing_data(genre, model_name=default_model_name):
     """Driver function to collect frame features for a genre"""
