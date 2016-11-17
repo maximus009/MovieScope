@@ -45,7 +45,7 @@ def test_video(videoPath, model):
     
 
 def ultimate_evaluate(model):
-    genres = ['action','drama','horror','romance']
+    genres = ['action','drama','fantasy','horror','romance']
     testingData = []
     testingLabels = []
     total = defaultdict.fromkeys(range(len(genres)),0)
