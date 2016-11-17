@@ -50,6 +50,7 @@ def ultimate_evaluate(model):
     testingLabels = []
     total = {0:0, 1:0, 2:0, 3:0}
     correct = {0:0, 1:0, 2:0, 3:0}
+    yTrue, yPredict = [], []
     for genreIndex, genre in enumerate(genres):
 #        print "Looking for pickle file: data/{0}{1}.p".format(genre, str(num_of_videos)),
         try:
@@ -68,6 +69,8 @@ def ultimate_evaluate(model):
             for i in predictedClasses:
                 d[i]+=1
             predictedGenre = max(d.iteritems(), key=lambda x: x[1])[0]
+            yPredict.append(predictedGenre)
+            yTrue.append(genreIndex)
             if predictedGenre == genreIndex:
                 correct[genreIndex]+=1
 
