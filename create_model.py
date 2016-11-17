@@ -1,4 +1,4 @@
-from config.global_paramters import default_model_name
+from config.global_parameters import default_model_name
 from utils import load_pkl
 import numpy as np
 from model_utils import spatial_model
