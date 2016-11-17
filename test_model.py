@@ -75,8 +75,6 @@ def ultimate_evaluate(model):
                 correct[genreIndex]+=1
 
     print correct, total
-    yTrue = total.values()
-    yPredict = correct.values()
 
     confusionMatrix = confusion_matrix(yTrue, yPredict)
     print confusionMatrix
