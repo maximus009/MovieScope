@@ -47,7 +47,7 @@ def train_classifier(genres=['romance', 'horror', 'action'], model_name=default_
     nb_epoch = 100 
 
     model.fit(trainingData, trainingLabels, batch_size=batch_size, nb_epoch=nb_epoch)#, callbacks=[remote])
-    modelOutPath ='data/models/spatial'+model_name+'_'+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+"_nf_"+str(num_of_random_frames)+".h5"
+    modelOutPath ='data/models/spatial'+model_name+'_'+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+".h5"
     model.save(modelOutPath)
     print "Model saved at",modelOutPath
  
