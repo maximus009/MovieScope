@@ -1,4 +1,8 @@
 from config.global_paramters import default_model_name
+from utils import load_pkl
+import numpy as np
+from model_utils import spatial_model
+
 
 
 def train_classifier(genres=['romance', 'horror', 'action'], model_name=default_model_name):
@@ -50,3 +54,7 @@ def train_classifier(genres=['romance', 'horror', 'action'], model_name=default_
     model.save(modelOutPath)
     print "Model saved at",modelOutPath
  
+
+if __name__=="__main__":
+
+    train_classifier(genres=['action','romance'])
