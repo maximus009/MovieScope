@@ -22,7 +22,6 @@ def predict_genre(videoPath):
             try:
                 testingDataTensor[sampleIndex][vectorIndex] = sequences[sampleIndex][vectorIndex]
             except Exception as e:
-                print e
                 continue
     print testingDataTensor.shape
     predictions = model.predict_classes(testingDataTensor)
