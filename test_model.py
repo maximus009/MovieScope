@@ -70,7 +70,6 @@ def ultimate_evaluate(model):
             predictedGenre = max(d.iteritems(), key=lambda x: x[1])[0]
             if predictedGenre == genreIndex:
                 correct[genreIndex]+=1
-            break # ONLY ONE VIDEO
 
     print correct, total
 
