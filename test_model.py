@@ -47,8 +47,8 @@ def ultimate_evaluate(model):
     genres = ['action','drama','horror','romance']
     testingData = []
     testingLabels = []
-    total = {0:0}
-    correct = {0:0}
+    total = {0:0, 1:0, 2:0, 3:0}
+    correct = {0:0, 1:0, 2:0, 3:0}
     for genreIndex, genre in enumerate(genres):
 #        print "Looking for pickle file: data/{0}{1}.p".format(genre, str(num_of_videos)),
         try:
