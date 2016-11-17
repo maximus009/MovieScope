@@ -48,8 +48,8 @@ def ultimate_evaluate(model):
     genres = ['action','drama','horror','romance']
     testingData = []
     testingLabels = []
-    total = {0:0, 1:0, 2:0, 3:0}
-    correct = {0:0, 1:0, 2:0, 3:0}
+    total = defaultdict.fromkeys(range(len(genres)),0)
+    total = defaultdict.fromkeys(range(len(genres)),0)
     yTrue, yPredict = [], []
     for genreIndex, genre in enumerate(genres):
 #        print "Looking for pickle file: data/{0}{1}.p".format(genre, str(num_of_videos)),
@@ -84,5 +84,6 @@ if __name__=="__main__":
 
     from sys import argv
     model = load_moviescope_model(argv[1])
-    ultimate_evaluate(model)
+    #ultimate_evaluate(model)
     """to call test_video"""
+    print test_video(argv[2], model)
