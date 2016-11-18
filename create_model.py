@@ -27,7 +27,7 @@ def train_classifier(genres=['romance', 'horror', 'action']):
     trainingData = []
     trainingLabels = []
     num_of_classes = len(genres)
-    num_of_frames = 20
+    num_of_frames = 9
     print "Number of classes:",num_of_classes
     for genreIndex, genre in enumerate(genres):
         try:
