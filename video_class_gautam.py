@@ -5,6 +5,7 @@ from glob import glob
 from config.resources import video_resource
 from config.global_parameters import frameWidth, frameHeight
 import scenedetect
+from utils import dump_pkl
 
 
 class genre:
@@ -12,14 +13,14 @@ class genre:
     path=""
     no_videos=0
 
-    def __init__(self,genre,limit_videos=-1):
+    def __init__(self,genre,limit_videos=None):
         self.genre=genre
         self.no_videos=limit_videos
         self.path=video_resource
+
     def gather_videos(self):
-        videoPaths = glob(self.path+'\\'+self.genre+'\*')
+        videoPaths = glob(self.path+'train/'+self.genre+'/*')[:self.no_videos]
         print self.path
-        videoPaths=videoPaths[:self.no_videos]
         return videoPaths
 
 class video:
@@ -69,15 +70,14 @@ class video:
         return sceneDetect
 
     def stitch_video_frames(self,start,end):
-        print "next set"
         scene=[]
         video_capture = cv2.VideoCapture(self.path)
         video_capture.set(cv2.CAP_PROP_POS_FRAMES,start)
         for i in range(start, end):
             ret,frame = video_capture.read()
-            scene.append(frame)
             if not ret:
                 break
+            scene.append(frame)
         return scene
 
     def draw_flow(self,img, flow, step=16):
@@ -109,43 +109,42 @@ class video:
             img = cv2.resize(img, (224, 224))
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  
             flow = cv2.calcOpticalFlowFarneback(prevgray, gray, 0.5, 3, 15, 3, 5, 1.2, 0)
-            stacked_optical_flow.append(flow)
             prevgray = gray
             if visualize:
                 cv2.imshow('flow', self.draw_flow(gray, flow))
                 if cv2.waitKey(10) == ord('q'):
                     break
-        print
+            flow = np.reshape(flow ,(2, frameWidth, frameHeight))
+            flowX, flowY = flow[0],flow[1]
+            stacked_optical_flow.append(flowX)
+            stacked_optical_flow.append(flowY)
         cv2.destroyAllWindows()
         stacked_optical_flow = np.array(stacked_optical_flow)
         return stacked_optical_flow
 
 
 if __name__=="__main__":
-    horror=genre('horror',limit_videos=1)
+    genre_name = 'action'
+    horror=genre(genre_name)
     video_list=horror.gather_videos()
     print video_list
+    genre_OF_features = []
     for each_video in video_list:
         optical_flow=[]
+        video_OF_features = []
         obj=video(each_video)
         print obj.path
         frames_each_video=obj.get_frames()
         sceneDetect=obj.scene_detect()
-        print sceneDetect
-        scenes=[]
+        #scenes=[]
+
         for index in range(len(sceneDetect)-3):
             start=sceneDetect[index]
             end=sceneDetect[index+1]
-            scenes.append(obj.stitch_video_frames(start,end))
-        for i in scenes[10:]:
-            opt_flow=obj.optical_flow(i,visualize=False)
-            print opt_flow
-            print "Never let you go"
-
-        #features_each_video=obj.get_features()
-        print
-        print
-        print "Scene detect",sceneDetect
-        print
-        print "%"*100
-       # print "Here lies features for each video",features_each_video
+            scenes = obj.stitch_video_frames(start,end)
+            opt_flow=obj.optical_flow(scenes,visualize=False)
+            video_OF_features.append(opt_flow)
+        video_OF_features = np.array(video_OF_features)
+        genre_OF_features.append(video_OF_features)
+    print len(genre_OF_features)
+    dump_pkl(genre_OF_features, genre_name+"_SOF")
