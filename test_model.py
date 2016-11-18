@@ -49,7 +49,7 @@ def ultimate_evaluate(model):
     testingData = []
     testingLabels = []
     total = defaultdict.fromkeys(range(len(genres)),0)
-    total = defaultdict.fromkeys(range(len(genres)),0)
+    correct = defaultdict.fromkeys(range(len(genres)),0)
     yTrue, yPredict = [], []
     for genreIndex, genre in enumerate(genres):
 #        print "Looking for pickle file: data/{0}{1}.p".format(genre, str(num_of_videos)),
