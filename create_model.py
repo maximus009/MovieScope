@@ -4,7 +4,7 @@ import numpy as np
 from utils import load_pkl, dump_pkl
 from config.global_parameters import frameWidth, frameHeight, genreLabels 
 from config.resources import video_resource
-from video import extract_feature_video, gather_videos, get_frames
+from video import extract_feature_video, gather_videos, get_frames, sequencify
 from model_utils import lstm_model, get_features
 
 from keras.utils.np_utils import to_categorical
