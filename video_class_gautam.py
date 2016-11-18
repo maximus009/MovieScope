@@ -18,6 +18,7 @@ class genre:
         self.path=video_resource
     def gather_videos(self):
         videoPaths = glob(self.path+'\\'+self.genre+'\*')
+        print self.path
         videoPaths=videoPaths[:self.no_videos]
         return videoPaths
 
@@ -74,17 +75,58 @@ class video:
         video_capture.set(cv2.CAP_PROP_POS_FRAMES,start)
         for i in range(start, end):
             ret,frame = video_capture.read()
-            #scene.append(frame)
+            scene.append(frame)
             if not ret:
                 break
         return scene
 
+    def draw_flow(self,img, flow, step=16):
+        h, w = img.shape[:2]
+        y, x = np.mgrid[step/2:h:step, step/2:w:step].reshape(2,-1).astype(int)
+        fx, fy = flow[y,x].T
+        lines = np.vstack([x, y, x+fx, y+fy]).T.reshape(-1, 2, 2)
+        lines = np.int32(lines + 0.5)
+        vis = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        cv2.polylines(vis, lines, 0, (0, 255, 0))
+        for (x1, y1), (x2, y2) in lines:
+            cv2.circle(vis, (x1, y1), 1, (0, 255, 0), -1)
+        return vis
+
+
+    def optical_flow(self,scenes, verbose = False, visualize=False):
+        if verbose:
+            print "Stacking Optical Flow features:"
+
+        stacked_optical_flow = []
+        prev = scenes[0]
+        prev = cv2.resize(prev, (224,224)) 
+        prevgray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
+
+        for i in range(1,len(scenes)):
+            if verbose:
+                print ".",
+            img = scenes[i]
+            img = cv2.resize(img, (224, 224))
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  
+            flow = cv2.calcOpticalFlowFarneback(prevgray, gray, 0.5, 3, 15, 3, 5, 1.2, 0)
+            stacked_optical_flow.append(flow)
+            prevgray = gray
+            if visualize:
+                cv2.imshow('flow', self.draw_flow(gray, flow))
+                if cv2.waitKey(10) == ord('q'):
+                    break
+        print
+        cv2.destroyAllWindows()
+        stacked_optical_flow = np.array(stacked_optical_flow)
+        return stacked_optical_flow
+
 
 if __name__=="__main__":
-    horror=genre('animation',limit_videos=10)
+    horror=genre('horror',limit_videos=1)
     video_list=horror.gather_videos()
     print video_list
     for each_video in video_list:
+        optical_flow=[]
         obj=video(each_video)
         print obj.path
         frames_each_video=obj.get_frames()
@@ -95,10 +137,15 @@ if __name__=="__main__":
             start=sceneDetect[index]
             end=sceneDetect[index+1]
             scenes.append(obj.stitch_video_frames(start,end))
+        for i in scenes[10:]:
+            opt_flow=obj.optical_flow(i,visualize=False)
+            print opt_flow
+            print "Never let you go"
+
         #features_each_video=obj.get_features()
         print
         print
         print "Scene detect",sceneDetect
         print
-        print "%"*50
+        print "%"*100
        # print "Here lies features for each video",features_each_video
