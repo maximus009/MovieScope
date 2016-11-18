@@ -51,7 +51,7 @@ def sequencify(videoFeatures, length=20):
         yield videoFeatures[i:i+length]
       
     
-def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
+def train_classifier(genres=['romance', 'horror', 'action']):
     
     """Gather data for selected genres"""
     trainingData = []
@@ -90,7 +90,7 @@ def train_classifier(genres=['romance', 'horror', 'action'], num_of_videos=100):
     nb_epoch = 100
     batch_size = 10
     model.fit(trainingDataTensor, trainingLabels, nb_epoch=nb_epoch, batch_size=batch_size)
-    model.save("data/models/lstm_"+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+".h5")
+    model.save("data/models/lstm_"+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+"nf_"+str(num_of_frames)+".h5")
 
 if __name__=="__main__":
     train_classifier(genres=['action', 'horror', 'romance'],num_of_videos=100)
