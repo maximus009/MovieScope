@@ -21,6 +21,12 @@ def get_frames(videoPath, start_time=5000, end_time=120000, time_step=2000):
         return
 
 
+def sequencify(videoFeatures, length=20):
+    totalFrames = len(videoFeatures)
+    for i in range(0, totalFrames, length):
+        yield videoFeatures[i:i+length]
+ 
+
 def extract_feature_video(videoPath, verbose=False):
 
     """deprecated"""
