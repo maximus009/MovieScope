@@ -9,8 +9,8 @@ from collections import defaultdict
 from sklearn.metrics import confusion_matrix
 
 
-def ultimate_evaluate(model):
-    genres = ['action','horror','romance']
+def ultimate_evaluate(model, length=20):
+    genres = ['action','drama','horror','romance']
     testingData = []
     testingLabels = []
     total = defaultdict.fromkeys(range(len(genres)),0)
@@ -29,7 +29,7 @@ def ultimate_evaluate(model):
             """to get all frames from a video -- hacky"""
             total[genreIndex]+=1
             d = defaultdict(int)
-            sequences = np.array(list(sequencify(videoFeatures)))
+            sequences = np.array(list(sequencify(videoFeatures, length)))
             num_of_samples = len(sequences)
             num_of_frames = len(sequences[0])
             testingDataTensor = np.zeros((num_of_samples, num_of_frames, 4096))
@@ -64,4 +64,4 @@ if __name__=="__main__":
 
     from sys import argv
     model = load_moviescope_model(argv[1])
-    ultimate_evaluate(model)
+    ultimate_evaluate(model, length=9)
