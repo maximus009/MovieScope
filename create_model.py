@@ -62,4 +62,4 @@ def train_classifier(genres=['romance', 'horror', 'action']):
     model.save("data/models/lstm_"+str(num_of_classes)+"g_bs"+str(batch_size)+"_ep"+str(nb_epoch)+"nf_"+str(num_of_frames)+".h5")
 
 if __name__=="__main__":
-    train_classifier(genres=['action', 'horror', 'romance'])
+    train_classifier(genres=['action', 'drama', 'horror', 'romance'])
