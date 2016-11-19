@@ -41,15 +41,18 @@ def ultimate_evaluate(model):
                     except Exception as e:
                         continue
 
-            predictedClasses = model.predict_classes(testingDataTensor) #List of predictions, per-frame
-            print predictedClasses
-            for i in predictedClasses:
-                d[i]+=1
-            predictedGenre = max(d.iteritems(), key=lambda x: x[1])[0]
-            yPredict.append(predictedGenre)
-            yTrue.append(genreIndex)
-            if predictedGenre == genreIndex:
-                correct[genreIndex]+=1
+            try:
+                predictedClasses = model.predict_classes(testingDataTensor) #List of predictions, per-frame
+                print predictedClasses
+                for i in predictedClasses:
+                    d[i]+=1
+                predictedGenre = max(d.iteritems(), key=lambda x: x[1])[0]
+                yPredict.append(predictedGenre)
+                yTrue.append(genreIndex)
+                if predictedGenre == genreIndex:
+                    correct[genreIndex]+=1
+            except Exception as e:
+                print e
 
     print correct, total
 
