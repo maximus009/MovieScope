@@ -1,9 +1,7 @@
 """This is where we test data"""
 import os
-from video import get_frames, sequencify
-from model_utils import get_features_batch
+from video import sequencify
 from config.global_parameters import default_model_name
-from config.resources import video_resource
 from glob import glob
 import numpy as np
 from utils import dump_pkl, load_pkl, load_moviescope_model
