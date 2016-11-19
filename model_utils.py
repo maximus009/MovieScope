@@ -1,8 +1,9 @@
 from keras.applications.vgg19 import VGG19
 from keras.applications.vgg16 import VGG16
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout
+from keras.layers.core import Dense, Dropout, Flatten
 from keras.layers import LSTM
+from keras.layers.convolutional import Convolution2D, Convolution3D, MaxPooling2D
 from keras import backend
 import numpy as np
 import tensorflow as tf
@@ -88,6 +89,20 @@ def lstm_model(number_of_classes=2, number_of_frames=None, input_dim=4096):
 
     return model
 
+
+def optical_flow_model(number_of_classes=2):
+
+    model = Sequential()
+    model.add(Convolution2D(48, 7, 7, border_mode='same', input_shape=(4, 224, 224), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Flatten())
+    model.add(Dense(512))
+    model.add(Dropout(0.5))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(32, activation='relu'))
+    model.add(Dense(number_of_classes, activation='softmax'))
+
+    return model
 
 if __name__=="__main__":
     import cv2
