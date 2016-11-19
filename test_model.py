@@ -29,7 +29,7 @@ def ultimate_evaluate(model):
             """to get all frames from a video -- hacky"""
             total[genreIndex]+=1
             d = defaultdict(int)
-            sequence = np.array(list(sequencify(videoFeatures)))
+            sequences = np.array(list(sequencify(videoFeatures)))
             num_of_samples = len(sequences)
             num_of_frames = len(sequences[0])
             testingDataTensor = np.zeros((num_of_samples, num_of_frames, 4096))
