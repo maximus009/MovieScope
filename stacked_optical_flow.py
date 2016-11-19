@@ -5,7 +5,9 @@ from glob import glob
 from config.resources import video_resource
 from config.global_parameters import frameWidth, frameHeight
 import scenedetect
-from utils import dump_pkl
+from utils import dump_pkl, load_pkl
+from model_utils import optical_flow_model
+from video import sequencify
 
 
 def scene_detect(videoPath):
@@ -22,8 +24,8 @@ def extract_scenes(videoPath, shot_boundaries):
         start = shot_boundaries[i]
         end = shot_boundaries[i+1]
         scene = []
-        video_capture.set(cv2.CAP_PROP_POS_FRAMES,start)
-        for i in range(start, end):
+        for i in range(start, end+1, 30):
+            video_capture.set(cv2.CAP_PROP_POS_FRAMES,i)
             success,frame = video_capture.read()
             if not success:
                 break
@@ -39,6 +41,8 @@ def stacked_scene_optical_flow(scene):
         img = scene[i]
         prev = scene[i-1]
         flow = cv2.calcOpticalFlowFarneback(prev, img, 0.5, 3, 15, 3, 5, 1.2, 0)
+        del img
+        del prev
         flow = np.reshape(flow ,(2, frameWidth, frameHeight))
         flowX, flowY = flow[0],flow[1]
         stackedOpticalFlow.append(flowX)
@@ -59,17 +63,49 @@ def optical_flow(videoPath):
     return opticalFlow
 
 
-def gather_optical_flow_features(genre):
+def gather_optical_flow_features(genre, limit_videos = 2):
     genre_OF_features = []
-    videoPaths = glob(os.path.join(video_resource,'train',genre)+'/*')
+    videoPaths = glob(os.path.join(video_resource,'train',genre)+'/*')[:limit_videos]
     for videoPath in videoPaths:
-        genre_OF_features.append(optical_flow(videoPath))
+        videoFeatures = optical_flow(videoPath)
+        print videoFeatures.shape
+        genre_OF_features.append(videoFeatures)
+        print "*"*90
     dump_pkl(genre_OF_features, genre+"_ultimate_OF")
 
 
+def create_model(genres):
+
+    trainingData = []
+    trainingLabels = []
+
+    number_of_classes=len(genres)
+
+    for genreIndex, genre in enumerate(genres):
+        try:
+            genreFeatures = load_pkl(genre+"_ultimate_OF")
+        except Exception as e:
+            print e
+            return
+        for videoFeatures in genreFeatures:
+            print videoFeatures.shape
+            if videoFeatures.shape==(0,):
+                continue
+            for scene in videoFeatures:
+                for sequence in sequencify(scene,4):
+                    trainingData.append(sequence)
+                    trainingLabels.append(genreIndex)
+
+    trainingData = np.array(trainingData)
+    trainingLabels = np.array(trainingLabels)
+    print trainingData.shape
+    print trainingLabels.shape
+    model = optical_flow_model(number_of_classes)
+    model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy',metrics=['accuracy'])
+    model.fit(trainingData[0], [trainingLabels[0]])
+
+    
+
 if __name__=="__main__":
-    genres = ['action']
-    for genre in genres:
-        gather_optical_flow_features(genre)
 
-
+    create_model(['action','drama','horror','romance'])
