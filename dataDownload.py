@@ -22,8 +22,8 @@ class Folder:
             os.mkdir(video_resource+self.name)
         path=video_resource+self.name
         os.chdir(path)
-        print "youtube-dl -i "+self.url
-        os.system("youtube-dl -i "+self.url)
+        print "youtube-dl -i "+url
+        os.system("youtube-dl -i "+url)
         os.chdir(prev)
         return 0
 

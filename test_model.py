@@ -9,7 +9,7 @@ import numpy as np
 from utils import dump_pkl, load_pkl, load_moviescope_model
 from collections import defaultdict
 from sklearn.metrics import confusion_matrix
-
+from keras.models import load_model
 
 def gather_testing_data(genre, model_name=default_model_name):
     """Driver function to collect frame features for a genre"""
@@ -32,12 +32,17 @@ def gather_testing_data(genre, model_name=default_model_name):
     outPath = genre+"_test_"+model_name
     dump_pkl(genreFeatures, outPath)
 
-def test_video(videoPath, model):
+def test_video(videoPath):
     """Return the genre type for each video input"""
     frames = list(get_frames(videoPath, time_step=1000))
     if len(frames)==0:
         print "Error in video"
         return
+    
+    print "Processing",videoPath
+    modelName = "adhr_spatialvgg16_4g_bs32_ep100.h5"
+    model = load_model("/Users/sivaramanks/code/MovieScope/data/models/"+ modelName)
+
     videoFeatures = get_features_batch(frames)
     predictedClasses = model.predict_classes(videoFeatures)
     predictedScores = model.predict(videoFeatures)
@@ -83,7 +88,13 @@ def ultimate_evaluate(model):
 if __name__=="__main__":
 
     from sys import argv
-    model = load_moviescope_model(argv[1])
+    #model = load_moviescope_model(argv[1])
     #ultimate_evaluate(model)
     """to call test_video"""
-    print test_video(argv[2], model)
+    genres, scores = test_video(argv[1])
+    predictedGenre = np.argmax(np.bincount(genres))                                                  
+    genreDict = {0:'action',1:'drama',2:'horror',3:'romance'}                                        
+    frameSequence=' | '.join([genreDict[key] for key in genres])                                     
+
+    print predictedGenre
+    print frameSequence
