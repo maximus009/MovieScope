@@ -15,37 +15,14 @@ see the implementation.
 
 To run the code, first, make changes to the file <code>config/resources.py</code> with the appropriate directory.
 <br>
-|
-data<br>
-|___train<br>
-    |___<class1><br>
-        |___<video1><br>
-        |___<video2><br>
-        . <br>
-        . <br>
-        . <br>
-    |___<class2> <br>
-        |___<video1> 
-        |_<video2>
-        .
-        .
-        .
-    .
-    .
-    .
-|___test
-    |___<class1>
-        |___<video1>
-        |___<video2>
-        .
-        .
-        .
-    |___<class2>
-        |___<video1>
-        |_<video2>
-        .
-        .
-        .
-    .
-    .
-    .
+<img src="tree.png">
+
+
+<h4>Steps to run the program</h4>
+<ol>
+    <li><code>create_data.py ["need to run twice, one for train data, one for test data; will refine the Code"]</code></li>
+    <li><code>create_model.py</code></li>
+    <li><code>test_model.py</code></li>
+</ol>
+<br>
+The program is pretty easy to use, plus the repo contains other auxilliary codes too.<hr>
