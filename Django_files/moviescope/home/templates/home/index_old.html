@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>MovieScope</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="jumbotron text-center">
+  <h1>MovieScope</h1>
+  <p>Using movie trailers to identify Genre | Deep Learning | Computer Vision</p> 
+</div>
+<div class="container">
+  <div class="row">
+      <div class="col-sm-4">
+          <h3>Enter your URL here</h3>
+      </div>
+    <div class="col-sm-4">
+      <div class="form-group">
+        <form method="GET">
+        <label for="url"></label>
+            <input type="text" class="form-control" id="url">
+       </div>
+      <button type="submit" onclick="getStatuses()" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+    <div class="col-sm-4">
+    </div>
+  </div>
+</div>
+</body>
+<script>
+function getStatuses(){
+var x = document.getElementById("url").value;
+var params = "link="+x;
+$.getJSON('/', {url: x})
+alert("hello")
+
+}
+</script>
+</html>
