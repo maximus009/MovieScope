@@ -93,7 +93,7 @@ def lstm_model(number_of_classes=2, number_of_frames=None, input_dim=4096):
 def optical_flow_model(number_of_classes=2):
 
     model = Sequential()
-    model.add(Convolution2D(48, 7, 7, border_mode='same', input_shape=(4, 224, 224), activation='relu'))
+    model.add(Convolution2D(48, 7, 7, border_mode='same', input_shape=(2, 224, 224), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Flatten())
     model.add(Dense(512))
@@ -114,3 +114,6 @@ if __name__=="__main__":
     start = time()
     vector = get_features(inputImage, 'vgg16')
     print 'time taken by vgg 16:',time()-start,'seconds. Vector shape:',vector.shape
+
+    model = spatial_model(4)
+    print model.summary()
