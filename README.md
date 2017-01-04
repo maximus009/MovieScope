@@ -26,3 +26,7 @@ To run the code, first, make changes to the file <code>config/resources.py</code
 </ol>
 <br>
 The program is pretty easy to use, plus the repo contains other auxilliary codes too.<hr>
+
+This project was initiated as a class project for Computational Visual Recognition class at UVa (Fall 2016). The project is still under development.
+
+Please contact <mailto>ks6cq@virginia.edu</mailto> for any clarifications or questions.
