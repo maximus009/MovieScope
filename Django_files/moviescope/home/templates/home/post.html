@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatable" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MovieScope Post</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/mystyles.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="index.html">Home</a>
+                    </li>
+                    <li>
+                        <a href="about.html">About</a>
+                    </li>
+                    <li>
+                        <a href="post.html">Blog Post</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+    <header class="jumbotron">
+
+
+        <!-- Main component for a primary marketing message or call to action -->
+
+        <div class="container">
+            <div class="row row-header">
+                <div class="col-xs-12 col-sm-8">
+                    <h1>MovieScope: Deep Network for Film Trailer Classification</h1>
+                    <p style="padding:10px;"></p>
+                    <p>Sivaraman K S (ks6cq) & Gautam Somappa (gs9ed)</p>
+                </div>
+                <divclass="col-xs-12 col-sm-4">
+            </div>
+        </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="rows row-content">
+            <div class="col-xs-12 col-sm-3">
+                <p style="padding:40px;"></p>
+                <h3 align=center>Introduction</h3>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <h2>ACT I</h2>
+                <p>Nowadays, Hollywood makes about 760 movies a year[1], this is roughly 2 movies every day. That being said,
+                    every movie has at least 3 trailers and many more featurettes before the final movie comes out in theatres.
+                    Genre tagging is done manually nowadays in many video sharing sites, but wouldn’t it be so much easier
+                    if the machine was able to automatically tag videos by itself ? </p>
+                <p>In our project, we deploy a deep learning model to classify trailers based on its genre. This classification
+                    of movie trailers, is hopefully, a naive and nascent step toward achieving great success at video classification
+                    akin to image classification. In addition to this, we will also be releasing the data set that we would
+                    use to train our model. For training the model, we will be using 120 properly curated videos in each
+                    genre, extract its visual features and attempt to classify the genre of the movie.</p>
+            </div>
+        </div>
+
+
+        <div class="rows row-content">
+            <div class="col-xs-12 col-sm-3">
+                <p style="padding:40px;"></p>
+                <h3 align=center>Data Collection</h3>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <h2>ACT II</h2>
+                <p>We collected Youtube videos from playlists featuring trailers of different genres. We ran a script that downloads
+                    playlists and puts them into a folder. Each folder was again split into training data and testing data
+                    in the proportion of 80-40. The videos that we downloaded were of varying sizes and resolutions. The
+                    reason for taking different resolutions was because we wanted to test if our model would perform well
+                    for a general case, hence we decided to train it with frames of different resolutions. Before the images
+                    are passed into the model, they are resized into a 224x224. All videos in each genre are indexed into
+                    MongoDB[2]. The video ID, video name, genre, format, resolution are all saved in MongoDB. This is done
+                    so that querying specific sets of videos would become easier later on.</p>
+            </div>
+        </div>
+
+        <div class="rows row-content">
+            <div class="col-xs-12 col-sm-3">
+                <p style="padding:40px;"></p>
+                <h3 align=center>Implemented Modules</h3>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <h2>ACT III</h2>
+                <p>Model in trained on 80 videos from genres: Action, Drama, Fantasy, Horror and Romance. We notice that the
+                    first 5 seconds of most trailers contain the certification and in no way contribute to any distinct visual
+                    features. Same goes for the last few seconds, which only contains information about the cast, director,
+                    production house, and release data. Hence, the frames between 5th second and 120th second are considered
+                    for all experiments during training.</p>
+                <p>Spatial features: VGG features[3] were extracted from the video, at a time-step of 2 seconds. In total, 58
+                    frames are extracted. Each frame results in a 4096 dimensional vector obtained from VGG.</p>
+                <p>Each frame is treated as an input, with an associated label same as the genre of the trailer.</p>
+                <figure>
+                    <img src="img/fig1.jpg"> </img>
+                    <img src="img/fig2.jpg"> </img>
+                </figure>
+
+            </div>
+
+        </div>
+        <div class="rows row-content">
+            <div class="col-xs-12 col-sm-3">
+                <p style="padding:20px;"></p>
+                <h3 align=center>Training</h3>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <p>
+                    As mentioned earlier, these frames from these 400 videos (80 videos from 5 genres) were stacked together. No preprocessing
+                    is done; meaning, the model heavily(actually, only) relies on the VGG features (pre-trained on ImageNet[4]).
+                    The final classification layer architecture is shown in Fig 2. Each frame has a corresponding label.
+                    SGD optimizer used to compute training loss. Each epoch took an average of 15 seconds. From each of the
+                    video, 35 frames were sampled randomly. Hence, each video is represented with 35 frames, each frame having
+                    4096 dimensions. 80 * 35, gives 2800 vectors for each genre. Hence, in total, the model was given 14000
+                    vectors. <b>The training accuracy was reported to be ~ 97%, for 50 epochs</b>, trained
+                    on a batch_size of 16. The graph is shown in Fig 3.
+                </p>
+                <figure>
+                    <img style="padding:20px 0px 30px 175px" src="img/fig3.png"> </img>
+                    <figcaption style="padding:20px 0px 30px 40px">Fig 2. Classification Architecture after VGG features per frame.</figcaption>
+                </figure>
+                <h4> Insert Training graph here </h4>
+            </div>
+
+        </div>
+
+        <div class="rows row-content">
+            <div class="col-xs-12 col-sm-3">
+                <p style="padding:40px;"></p>
+                <h3 align=center>Testing</h3>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <p>
+                    <b>Training accuracy reached 97%</b>. However, on testing against an unseen video, similar to training
+                    phase one, frames were periodically sampled after ignoring the first few and last few seconds of the
+                    video. This means, each frame was passed to the classifier, and would predict which genre it belongs
+                    to. The final output will be the mode of the individual predictions. Every tested video was classified
+                    correctly, but we also note the distribution of the frames. It was reported, on an average that only
+                    60% of the frames could correctly classify the genre. This outcome warrants further training on more
+                    data, and also include more classes/genres. The next section will discuss the secondary results of our
+                    experiment including more training data, as such.</p>
+                <p><b>The model was improved by feeding more data. 100 videos from each genre was selected from the gathered dataset.
+                    Certain videos were corrupt, and were ignored from the training data. A total of 6850 vectors were accumulated,
+                    each having 4096 dimensions. The following is the accuracy+loss vs epoch graph.</p>
+                <h4> Insert Testing graph here </h4>
+                <p>
+                    The training accuracy touches 98%, and the loss ~= 0.03</p>
+                <p>Testing in phase 2, took place with a more interesting set. Since our model takes only visual cues, we also
+                    downloaded trailers from foreign movies (French, Hindi) and included some of them in our test set. The
+                    following are the snapshots of the testing module</b>.
+                </p>
+                <h4> Insert Screenshot-1 here </h4>
+                <p>
+                    The first “(array[...])” part is the mean value of the softmax scores of the output. The second is the number of frames classified
+                    as romance, or horror. Eg., [53,5] signifies that 53 of the sampled frames were classified as romance,
+                    and the remaining 5 as horror. Since all the videos in this set were romance, the model has correctly
+                    classified all the movies, and with a good margin, unlike phase 1. However, outliers were detected.
+                </p>
+                <p>
+                    However, outliers were detected.
+                </P>
+                <h4> Insert Screenshot-2 here </h4>
+                <p>
+                    Turns out, that “Paper town” does not exactly belong to Romance genre, even though it appears in the playlist. It is more
+                    of a mystery, thriller; but it was closer to romance than horror. When we include more genres for our
+                    model to classify, such outliers should be rectified. And one more..
+                </p>
+                <h4> Insert Screenshot-3 here </h4>
+                <p>
+                    Warm bodies is a story of zombies falling in love; horror or romance? Well, our system tagged it as horror, but, looking
+                    at the trailer, it is understood why the system misclassified it.</p>
+
+
+                <p>The average percentage of frames that were correctly classified jumps to 93.7%, which is a major difference
+                    from 60%. This proves that more the data, better the learning and generalizability.
+                </P>
+            </div>
+
+
+        </div>
+        <div class="rows row-content">
+            <div class="col-xs-12 col-sm-3">
+                <p style="padding:40px;"></p>
+                <h3 align=center>Conclusion</h3>
+            </div>
+            <div class="col-xs-12 col-sm-9">
+                <h2>ACT IV</h2>
+                <p>The project, which deals with classifying movie trailers into their genres using just visual features, is
+                    a humble attempt at extending the success of Deep Neural Nets to video classification. Activity Recognition
+                    on untrimmed videos has been heavily researched and implemented, and recent successes have been presented
+                    on ActivityNet [7](a challenge similar to ImageNet but for videos). But our concern is that action recognition
+                    is not as dynamic as long videos, such as movie trailers. We attempt to provide a classification technique
+                    for long videos, using this project as means to start work in this field of classifying temporally dynamic
+                    videos [8] using visual features.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row row-footer">
+                <div class="col-xs-11 col-xs-offset-1 col-sm-10 col-sm-offset-2">
+                    <h4>Citations</h4>
+                    <ol>
+                        <li><a href="https://www.quora.com/On-average-how-many-Hollywood-films-are-released-in-a-year">On-average-how-many-Hollywood-films-are-released-in-a-year</a></li>
+                        <li><a href="https://www.mongodb.com/">mongodb.com/</a></li>
+                        <li><a href="https://arxiv.org/abs/1409.1556">K. Simonyan, A. Zisserman, ‘Very deep convolutional networks for Large scale Image classification</a></li>
+                        <li><a href="http://www.image-net.org/">A. Berg, J. Deng, and L. Fei-Fei. Large scale visual recognition challenge 2010.http://image-net.org/</a></li>
+                        <li><a href="https://arxiv.org/abs/1604.06573">Feichtenhofer, Pinz, Zisserman, ‘Convolutional Two-Stream Network Fusion for Video Action Recognition</a></li>
+                        <li><a href="https://keras.io/applications/">https://keras.io/applications/</a></li>
+                        <li><a href="http://activity-net.org/">http://activity-net.org/</a></li>
+                        <li><a href="https://arxiv.org/abs/1609.06782">Wu, Yao, Fu, Jiang, ‘Deep Learning for Video Classification and Captioning</a></li>
+                    </ol>
+                </div>
+                <div class="col-xs-12">
+                    <p style="padding:10px;"></p>
+                    <p align=center>© Copyright 2016 Epic Sax Guys</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</body>
+
+</html>
