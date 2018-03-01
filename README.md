@@ -30,3 +30,5 @@ The program is pretty easy to use, plus the repo contains other auxilliary codes
 This project was initiated as a class project for Computational Visual Recognition class at UVa (Fall 2016). The project is still under development.
 
 Please contact <mailto>ks6cq@virginia.edu</mailto> for any clarifications or questions.
+<hr>
+Please refer to the other repo - <a href="https://github.com/maximus009/VisLangResearch" target=_blank>https://github.com/maximus009/VisLangResearch</a>
