@@ -1,4 +1,7 @@
 # MovieScope
+
+### Please refer to the other repo - <a href="https://github.com/maximus009/VisLangResearch" target=_blank>https://github.com/maximus009/VisLangResearch</a>
+
 Idea is to extend video classification for identifying what the genre (romance, horror or action) of a movie is based
 on the trailer solely using visual features.
 <br>
@@ -31,4 +34,3 @@ This project was initiated as a class project for Computational Visual Recogniti
 
 Please contact <mailto>ks6cq@virginia.edu</mailto> for any clarifications or questions.
 <hr>
-Please refer to the other repo - <a href="https://github.com/maximus009/VisLangResearch" target=_blank>https://github.com/maximus009/VisLangResearch</a>
